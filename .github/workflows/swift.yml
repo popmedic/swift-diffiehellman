@@ -20,4 +20,4 @@ jobs:
     # - name: Run automation
     #   run: ./auto.sh
     - name: Run coverage
-      run: ./cov.sh +llvm_report
+      run: Scripts/cov.sh +llvm_report
