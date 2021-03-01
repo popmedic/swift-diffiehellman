@@ -17,7 +17,7 @@ jobs:
       run: swiftlint --strict
     - name: Run tests
       run: swift test --enable-code-coverage
-    - name: Run automation
-      run: ./auto.sh
+    # - name: Run automation
+    #   run: ./auto.sh
     - name: Run coverage
       run: ./cov.sh +llvm_report
