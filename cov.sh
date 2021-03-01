@@ -1,7 +1,7 @@
 #!/bin/sh
 
 GIT_HASH=`git rev-parse --short HEAD`
-[ $? != 0 ] && rm -rf "${COVERAGE_GIST}" && exit 1
+[ $? != 0 ] && exit 1
 echo "► current commit hash: ${GIT_HASH}"
 
 if [[ " $@ " =~ " +all " ]]; then
