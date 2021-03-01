@@ -151,3 +151,5 @@ iOSInjectionProject/
 # End of https://www.toptal.com/developers/gitignore/api/xcode,macos,visualstudiocode,swift
 
 coverage.gist 
+
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
