@@ -1,31 +1,33 @@
 import Foundation
 
 public struct DiffieHellman {
+    private let persist: Persisting
+    private let persistKey: String
     private let privateKey: UInt
     private let base: UInt
     private let modulus: UInt
     /// public key computed from the private key
-    let publicKey: UInt
+    public let publicKey: UInt
 
+    // swiftlint:disable identifier_name
     public init(_ privateKey: UInt? = nil,
                 base: UInt = 2147483647,     // defaults to a really big prime number
                 modulus: UInt = 4294967291,  // defaults to a really big prime number
-                // swiftlint:disable identifier_name
                 Persisting: Persisting.Type? = nil,
-                // swiftlint:enable identifier_name
-                keygen: (() -> UInt)? = nil) throws {
+                keygen: (() -> UInt)? = nil,
+                label: String = "") throws {
         // use the persisting type they pass in
         let keygen = keygen ?? { UInt.random(in: UInt.min...UInt.max) }
-        // swiftlint:disable identifier_name
         let Persisting = Persisting ?? KeyChainAccess.self
-        // swiftlint:enable identifier_name
-        let keyChain = Persisting.init()
+        persist = Persisting.init()
+        persistKey = "\(persistKeyPrefix)\(label.isEmpty ? "" : ".\(label)")"
+
         // if given a private key, then set it in the key chain
         if var privateKey = privateKey {
             self.privateKey = privateKey
             let data = Data(bytes: &privateKey, count: MemoryLayout<UInt>.size)
-            try keyChain.set(key: .keychainKey, to: data)
-        } else if let privateKey = try? keyChain.get(key: .keychainKey) {
+            try persist.set(key: persistKey, to: data)
+        } else if let privateKey = try? persist.get(key: persistKey) {
             // if not given a private key, check if there is on in the key chain,
             // if so use it
             self.privateKey = privateKey.withUnsafeBytes { $0.load(as: UInt.self) }
@@ -35,17 +37,20 @@ public struct DiffieHellman {
             var privateKey = keygen()
             self.privateKey = privateKey
             let data = Data(bytes: &privateKey, count: MemoryLayout<UInt>.size)
-            try keyChain.set(key: .keychainKey, to: data)
+            try persist.set(key: persistKey, to: data)
         }
+
         // use the initialization vector passed in, or default to some really big
         // prime numbers
         self.base = base
         self.modulus = modulus
+
         // compute the public key from the private key and the base and modulus
         publicKey = Self.compute(self.privateKey, base: self.base, modulus: self.modulus)
     }
+    // swiftlint:enable identifier_name
 
-    func digest(_ input: Data, using publicKey: UInt) -> Data {
+    public func digest(_ input: Data, using publicKey: UInt) -> Data {
         // compute the secret key by using this private key based with public key
         // passed in, assuming the modulus is the same used to produce both public
         // keys, this secret is the same when (x.pub, y.private) or (y.pub, x.priv)
@@ -73,6 +78,10 @@ public struct DiffieHellman {
         // return the digested output
         return output
     }
+
+    public func clearKeyChain() {
+        persist.remove(key: persistKey)
+    }
 }
 
 private extension DiffieHellman {
@@ -94,6 +103,4 @@ private extension DiffieHellman {
     }
 }
 
-extension String {
-    static let keychainKey: String = "com.kscardina.diffieHellman.privateKey"
-}
+let persistKeyPrefix: String = "com.kscardina.diffieHellman.privateKey"

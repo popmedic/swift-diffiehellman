@@ -30,7 +30,7 @@ final class DiffieHellmanTests: XCTestCase {
     func testPrivateKeyGivenSet() {
         let givenKey: UInt = 102175
         MockPersisting.setHandler = { key, value throws in
-            XCTAssertEqual(key, .keychainKey)
+            XCTAssertEqual(key, persistKeyPrefix)
             let valueKey: UInt = value.withUnsafeBytes { $0.load(as: UInt.self) }
             XCTAssertEqual(valueKey, givenKey)
         }
@@ -45,7 +45,7 @@ final class DiffieHellmanTests: XCTestCase {
     func testPrivateKeyFromKeyChain() {
         var givenKey: UInt = 102175
         MockPersisting.getHandler = { key throws -> Data? in
-            XCTAssertEqual(key, .keychainKey)
+            XCTAssertEqual(key, persistKeyPrefix)
             return Data(bytes: &givenKey, count: MemoryLayout<UInt>.size)
         }
         do {
@@ -76,11 +76,11 @@ final class DiffieHellmanTests: XCTestCase {
         MockPersisting.setHandler = { _, _ throws in }
         do {
             // create keys for alice
-            let alicePrivate: UInt = 1234567890
-            let alice = try DiffieHellman(alicePrivate, Persisting: MockPersisting.self)
+            let alice = try DiffieHellman(label: "alice")
+            defer { alice.clearKeyChain() }
             // create keys for bob
-            let bobPrivate: UInt = 9876543210
-            let bob = try DiffieHellman(bobPrivate, Persisting: MockPersisting.self)
+            let bob = try DiffieHellman(label: "bob")
+            defer { bob.clearKeyChain() }
             // message from bob to alice
             let bobsMsg = "Hello Alice, how are you? Bob.".data(using: .utf8)!
             // bob encrypts the message to alice
