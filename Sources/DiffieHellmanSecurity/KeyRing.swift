@@ -11,7 +11,7 @@ public struct KeyRing {
 
     // swiftlint:disable identifier_name
     /*
-     creates a new DiffieHellman key ring.
+     creates a new DiffieHellman KeyRing.
      */
     public init(_ privateKey: UInt? = nil,
                 label: String = "",

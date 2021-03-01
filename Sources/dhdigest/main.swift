@@ -11,7 +11,7 @@ import DiffieHellmanSecurity
 
 struct dhdigest: ParsableCommand {
     enum Error: Swift.Error {
-        case inputFileDoesNotExist, outputFileAlreadyExists
+        case inputFileDoesNotExist(String), outputFileAlreadyExists
     }
     enum Mode: String, ExpressibleByArgument {
         case enc, dec, show, clear
@@ -52,7 +52,7 @@ struct dhdigest: ParsableCommand {
         let persistKey = label.isEmpty ? "SYSTEM" : label
         switch mode {
         case .clear:
-            let ring = try DiffieHellman(label: label)
+            let ring = try KeyRing(label: label)
             print(
                 "removing private key for:",
                 ring.publicKey,
@@ -68,13 +68,13 @@ struct dhdigest: ParsableCommand {
                 persistKey
             )
         case .show:
-            let ring = try DiffieHellman(label: label)
+            let ring = try KeyRing(label: label)
             if !brevity { print("Public Key for \(persistKey):") }
             print(ring.publicKey)
         case .dec, .enc:
             // validate input file
             guard FileManager.default.fileExists(atPath: inputPath) else {
-                throw Error.inputFileDoesNotExist
+                throw Error.inputFileDoesNotExist(inputPath)
             }
             // validate output file
             guard !outputPath.isEmpty,
@@ -82,7 +82,7 @@ struct dhdigest: ParsableCommand {
                 throw Error.outputFileAlreadyExists
             }
 
-            let ring = try DiffieHellman(label: label)
+            let ring = try KeyRing(label: label)
             print(
                 """
                 Using:

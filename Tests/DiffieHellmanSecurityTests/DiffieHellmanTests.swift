@@ -15,7 +15,7 @@ final class DiffieHellmanTests: XCTestCase {
             throw MockError.test
         }
         XCTAssertThrowsError(
-            try DiffieHellman(
+            try KeyRing(
                 102175,
                 Persisting: MockPersisting.self
             )
@@ -35,7 +35,7 @@ final class DiffieHellmanTests: XCTestCase {
             XCTAssertEqual(valueKey, givenKey)
         }
         do {
-            let bob = try DiffieHellman(102175, Persisting: MockPersisting.self)
+            let bob = try KeyRing(102175, Persisting: MockPersisting.self)
             XCTAssertEqual(bob.publicKey, 3472325210)
         } catch {
             XCTFail("should not throw error: \(error)")
@@ -49,7 +49,7 @@ final class DiffieHellmanTests: XCTestCase {
             return Data(bytes: &givenKey, count: MemoryLayout<UInt>.size)
         }
         do {
-            let bob = try DiffieHellman(Persisting: MockPersisting.self)
+            let bob = try KeyRing(Persisting: MockPersisting.self)
             XCTAssertEqual(bob.publicKey, 3472325210)
         } catch {
             XCTFail("should not throw error: \(error)")
@@ -64,7 +64,7 @@ final class DiffieHellmanTests: XCTestCase {
         }
 
         do {
-            let bob = try DiffieHellman(Persisting: MockPersisting.self,
+            let bob = try KeyRing(Persisting: MockPersisting.self,
                                         keygen: { () -> UInt in givenKey })
             XCTAssertEqual(expKey, bob.publicKey)
         } catch {
@@ -76,10 +76,10 @@ final class DiffieHellmanTests: XCTestCase {
         MockPersisting.setHandler = { _, _ throws in }
         do {
             // create keys for alice
-            let alice = try DiffieHellman(label: "alice")
+            let alice = try KeyRing(label: "alice")
             defer { alice.clearKeyChain() }
             // create keys for bob
-            let bob = try DiffieHellman(label: "bob")
+            let bob = try KeyRing(label: "bob")
             defer { bob.clearKeyChain() }
             // message from bob to alice
             let bobsMsg = "Hello Alice, how are you? Bob.".data(using: .utf8)!
