@@ -1,6 +1,6 @@
 import Foundation
 
-public struct DiffieHellman {
+public struct KeyRing {
     private let persist: Persisting
     private let persistKey: String
     private let privateKey: UInt
@@ -10,6 +10,9 @@ public struct DiffieHellman {
     public let publicKey: UInt
 
     // swiftlint:disable identifier_name
+    /*
+     creates a new DiffieHellman key ring.
+     */
     public init(_ privateKey: UInt? = nil,
                 label: String = "",
                 base: UInt = 2147483647,     // defaults to a really big prime number
@@ -84,7 +87,7 @@ public struct DiffieHellman {
     }
 }
 
-private extension DiffieHellman {
+private extension KeyRing {
     static func compute(_ key: UInt, base: UInt, modulus: UInt) -> UInt {
         // swiftlint:disable identifier_name
         var k = key
