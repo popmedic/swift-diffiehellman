@@ -35,7 +35,7 @@ let package = Package(
                 "DiffieHellmanSecurity"
             ],
             resources: [
-                .process("Mocks")
+                .process("TestData")
             ]
         ),
         .target(
