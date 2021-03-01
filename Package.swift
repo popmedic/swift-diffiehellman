@@ -10,7 +10,7 @@ let package = Package(
             targets: [
                 "DiffieHellmanSecurity"
             ]
-        ),
+        )
     ],
     dependencies: [],
     targets: [
@@ -23,6 +23,6 @@ let package = Package(
             dependencies: [
                 "DiffieHellmanSecurity"
             ]
-        ),
+        )
     ]
 )

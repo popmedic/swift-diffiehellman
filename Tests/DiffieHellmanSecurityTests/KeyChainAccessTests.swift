@@ -15,7 +15,6 @@ final class KeyChainAccessTests: XCTestCase {
                 switch error {
                 case KeyChainAccess.Error.unableToGet(let status):
                     XCTAssertEqual(status, errSecItemNotFound)
-                    break
                 default:
                     XCTFail("should throw an unableToGet error")
                 }
@@ -26,6 +25,6 @@ final class KeyChainAccessTests: XCTestCase {
     }
 
     static var allTests = [
-        ("test", test),
+        ("test", test)
     ]
 }

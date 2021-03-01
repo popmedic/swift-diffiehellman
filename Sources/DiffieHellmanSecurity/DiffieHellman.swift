@@ -6,15 +6,19 @@ public struct DiffieHellman {
     private let modulus: UInt
     /// public key computed from the private key
     let publicKey: UInt
-    
+
     public init(_ privateKey: UInt? = nil,
                 base: UInt = 2147483647,     // defaults to a really big prime number
                 modulus: UInt = 4294967291,  // defaults to a really big prime number
+                // swiftlint:disable identifier_name
                 Persisting: Persisting.Type? = nil,
+                // swiftlint:enable identifier_name
                 keygen: (() -> UInt)? = nil) throws {
         // use the persisting type they pass in
         let keygen = keygen ?? { UInt.random(in: UInt.min...UInt.max) }
+        // swiftlint:disable identifier_name
         let Persisting = Persisting ?? KeyChainAccess.self
+        // swiftlint:enable identifier_name
         let keyChain = Persisting.init()
         // if given a private key, then set it in the key chain
         if var privateKey = privateKey {
@@ -40,7 +44,7 @@ public struct DiffieHellman {
         // compute the public key from the private key and the base and modulus
         publicKey = Self.compute(self.privateKey, base: self.base, modulus: self.modulus)
     }
-    
+
     func digest(_ input: Data, using publicKey: UInt) -> Data {
         // compute the secret key by using this private key based with public key
         // passed in, assuming the modulus is the same used to produce both public
@@ -73,6 +77,7 @@ public struct DiffieHellman {
 
 private extension DiffieHellman {
     static func compute(_ key: UInt, base: UInt, modulus: UInt) -> UInt {
+        // swiftlint:disable identifier_name
         var k = key
         var b = base
         var r: UInt = 0
@@ -82,9 +87,10 @@ private extension DiffieHellman {
             // fast exponention
             if r == 1 { y = (y*b) % modulus }
             b = b*b % modulus
-            k = k/2
+            k /= 2
         }
         return y
+        // swiftlint:enable identifier_name
     }
 }
 

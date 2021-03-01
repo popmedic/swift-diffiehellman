@@ -5,11 +5,11 @@ final class DiffieHellmanTests: XCTestCase {
     override func setUp() {
         MockPersisting.reset()
     }
-    
+
     override func tearDown() {
         MockPersisting.reset()
     }
-    
+
     func testPrivateKeyGivenSetException() {
         MockPersisting.setHandler = { _, _ throws in
             throw MockError.test
@@ -26,7 +26,7 @@ final class DiffieHellmanTests: XCTestCase {
             }
         }
     }
-    
+
     func testPrivateKeyGivenSet() {
         let givenKey: UInt = 102175
         MockPersisting.setHandler = { key, value throws in
@@ -35,13 +35,13 @@ final class DiffieHellmanTests: XCTestCase {
             XCTAssertEqual(valueKey, givenKey)
         }
         do {
-            let dh = try DiffieHellman(102175, Persisting: MockPersisting.self)
-            XCTAssertEqual(dh.publicKey, 3472325210)
+            let bob = try DiffieHellman(102175, Persisting: MockPersisting.self)
+            XCTAssertEqual(bob.publicKey, 3472325210)
         } catch {
             XCTFail("should not throw error: \(error)")
         }
     }
-    
+
     func testPrivateKeyFromKeyChain() {
         var givenKey: UInt = 102175
         MockPersisting.getHandler = { key throws -> Data? in
@@ -49,29 +49,29 @@ final class DiffieHellmanTests: XCTestCase {
             return Data(bytes: &givenKey, count: MemoryLayout<UInt>.size)
         }
         do {
-            let dh = try DiffieHellman(Persisting: MockPersisting.self)
-            XCTAssertEqual(dh.publicKey, 3472325210)
+            let bob = try DiffieHellman(Persisting: MockPersisting.self)
+            XCTAssertEqual(bob.publicKey, 3472325210)
         } catch {
             XCTFail("should not throw error: \(error)")
         }
     }
-    
+
     func testPrivateKeyGenerateNew() {
         let givenKey: UInt = 102175
         let expKey: UInt = 3472325210
         MockPersisting.getHandler = { _ throws -> Data? in
             throw MockError.test
         }
-        
+
         do {
-            let dh = try DiffieHellman(Persisting: MockPersisting.self,
-                                       keygen: { () -> UInt in givenKey })
-            XCTAssertEqual(expKey, dh.publicKey)
+            let bob = try DiffieHellman(Persisting: MockPersisting.self,
+                                        keygen: { () -> UInt in givenKey })
+            XCTAssertEqual(expKey, bob.publicKey)
         } catch {
             XCTFail("should not throw error: \(error)")
         }
     }
-    
+
     func test() {
         MockPersisting.setHandler = { key, value throws in }
         do {
@@ -101,6 +101,6 @@ final class DiffieHellmanTests: XCTestCase {
         ("testPrivateKeyGivenSet", testPrivateKeyGivenSet),
         ("testPrivateKeyFromKeyChain", testPrivateKeyFromKeyChain),
         ("testPrivateKeyGenerateNew", testPrivateKeyGenerateNew),
-        ("test", test),
+        ("test", test)
     ]
 }
