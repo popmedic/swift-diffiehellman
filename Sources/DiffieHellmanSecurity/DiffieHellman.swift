@@ -11,11 +11,11 @@ public struct DiffieHellman {
 
     // swiftlint:disable identifier_name
     public init(_ privateKey: UInt? = nil,
+                label: String = "",
                 base: UInt = 2147483647,     // defaults to a really big prime number
                 modulus: UInt = 4294967291,  // defaults to a really big prime number
                 Persisting: Persisting.Type? = nil,
-                keygen: (() -> UInt)? = nil,
-                label: String = "") throws {
+                keygen: (() -> UInt)? = nil) throws {
         // use the persisting type they pass in
         let keygen = keygen ?? { UInt.random(in: UInt.min...UInt.max) }
         let Persisting = Persisting ?? KeyChainAccess.self
