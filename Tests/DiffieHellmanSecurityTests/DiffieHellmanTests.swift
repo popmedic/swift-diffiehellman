@@ -73,7 +73,7 @@ final class DiffieHellmanTests: XCTestCase {
     }
 
     func test() {
-        MockPersisting.setHandler = { key, value throws in }
+        MockPersisting.setHandler = { _, _ throws in }
         do {
             // create keys for alice
             let alicePrivate: UInt = 1234567890
