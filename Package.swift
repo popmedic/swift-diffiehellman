@@ -4,6 +4,10 @@ import PackageDescription
 
 let package = Package(
     name: "DiffieHellmanSecurity",
+    platforms: [
+        .macOS(.v10_14),
+        .iOS(.v12)
+    ],
     products: [
         .library(
             name: "DiffieHellmanSecurity",
