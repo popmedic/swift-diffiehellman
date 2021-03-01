@@ -24,9 +24,9 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     COV_BIN="${COV_BIN}/Contents/MacOS/$f"
 fi
 LLVM_REPORT=`xcrun llvm-cov report \
-                "${COV_BIN}" \
-                -instr-profile=.build/debug/codecov/default.profdata \
-                -ignore-filename-regex=".build|Tests"`
+             "${COV_BIN}" \
+             -instr-profile=.build/debug/codecov/default.profdata \
+             -ignore-filename-regex=".build|Tests"`
 echo "${LLVM_REPORT}"
 PERCENT=`echo "${LLVM_REPORT}" | \
          pcregrep -o1 "TOTAL\s+(.*)" | \
@@ -37,7 +37,7 @@ echo "► gathering coverage..."
 echo "   ► total: ${PERCENT}%"
 
 if [[ " $@ " =~ " +update_badge " ]]; then
-    echo "► uploading badges:"
+    echo "► uploading badge:"
     TMPL='<svg 
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -124,11 +124,10 @@ if [[ " $@ " =~ " +update_badge " ]]; then
     </svg>
 </svg>'
     
-    PERCENTS=("${PERCENT_INSTANTIATIONS}" "${PERCENT_FUNCTIONS}" "${PERCENT_LINES}" "${PERCENT_REGIONS}")
     LABEL="Code Coverage"
     GIST="856e67e18cd23ea90772a825b159e00c"
     COVERAGE_GIST=coverage.gist
-    echo "   ► uploading badge for ${LABELS}..."
+    echo "   ► uploading badge for ${LABEL}..."
     GIST_URL="git@gist.github.com:${GIST}.git"
     echo "      ► cloning gist ${GIST_URL} into ${COVERAGE_GIST}..."
     git clone "${GIST_URL}" "${COVERAGE_GIST}" > /dev/null # 2> /dev/null
