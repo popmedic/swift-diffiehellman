@@ -153,3 +153,4 @@ iOSInjectionProject/
 coverage.gist 
 
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+default.profraw
