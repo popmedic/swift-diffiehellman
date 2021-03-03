@@ -54,7 +54,7 @@ struct dhdigest: ParsableCommand {
         case .clear:
             let ring = try KeyRing(label: label)
             print(
-                "removing private key for:",
+                "🗑 removing private key for:",
                 ring.publicKey,
                 "persist key:",
                 persistKey,
@@ -62,14 +62,14 @@ struct dhdigest: ParsableCommand {
             )
             ring.clearKeyChain()
             print(
-                "removed private key for:",
+                "♻️ removed private key for:",
                 ring.publicKey,
                 "persist key:",
                 persistKey
             )
         case .show:
             let ring = try KeyRing(label: label)
-            if !brevity { print("Public Key for \(persistKey):") }
+            if !brevity { print("🔑 public key for \(persistKey):") }
             print(ring.publicKey)
         case .dec, .enc:
             // validate input file
